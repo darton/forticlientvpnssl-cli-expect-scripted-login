@@ -18,6 +18,7 @@ spawn docker login -u $DOCKER_REGISTRY_USER $DOCKER_REGISTRY_URI
 while (1) {
   expect {
     -re ".*Password:.*" { send "$DOCKER_REGISTRY_PASS\r" }
+    -re ".*Your password will be stored unencrypted.*" { send "y\r" }
     eof { break }
   }
 }
