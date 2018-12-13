@@ -1,18 +1,24 @@
 #!/bin/bash
 
-set -x
-export PROJECT_DIR="$( cd $(dirname $(readlink -f $(which forticlientsslvpn_cli)))/.. && pwd  )"
+export PROJECT_DIR="/opt/forticlientsslvpn"
 
-#VPN_URI=_VPN_URI_
-#VPN_USER=_VPN_USER_
-#VPN_PASS=_VPN_PASS_
+VPN_URI='fortisslvpn.example.com:10443'
+VPN_USER='login'
+VPN_PASS='password'
+
+if [[ $EUID -ne 0 ]]; then
+    echo "This program must be run as root"
+    exit 1
+fi
+
+cat /etc/resolv.conf > /etc/resolv.conf-org
 
 if [[ -z "$VPN_URI" ]] || [[ -z "$VPN_USER" ]] || [[ -z "$VPN_PASS" ]]
 then
   echo "[!] Please, provide the following environment variables:"
-  echo '    - $VPN_URI (in the form of ${HOST}:${PORT})'
-  echo '    - $VPN_USER'
-  echo '    - $VPN_PASS'
+  echo '    - VPN_URI (in the form of FQDN:PORT)'
+  echo '    - VPN_USER'
+  echo '    - VPN_PASS'
   exit 1
 fi
 
@@ -26,3 +32,5 @@ while (1) {
   }
 }
 EOF
+
+cat /etc/resolv.conf-org > /etc/resolv.conf
